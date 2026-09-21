@@ -4,7 +4,7 @@ export const categoryLabels = {
   casuais: "Ensaios casuais",
 } as const;
 
-export type ContactCategory = keyof typeof categoryLabels;
+export type ContactCategory = string;
 export type BirthdayType = "festa" | "ensaio" | "a-definir";
 
 export interface ContactValues {
@@ -25,8 +25,11 @@ const birthdayLabels: Record<BirthdayType, string> = {
   "a-definir": "A definir",
 };
 
-export function normalizeCategory(value: unknown): ContactCategory | "" {
-  return typeof value === "string" && Object.prototype.hasOwnProperty.call(categoryLabels, value)
+export function normalizeCategory(
+  value: unknown,
+  labels: Record<string, string> = categoryLabels,
+): ContactCategory | "" {
+  return typeof value === "string" && Object.prototype.hasOwnProperty.call(labels, value)
     ? (value as ContactCategory)
     : "";
 }
@@ -67,11 +70,12 @@ export function formatDate(value?: string): string {
 export function validateContact(
   values: ContactValues,
   today: string = todayInLisbon(),
+  labels: Record<string, string> = categoryLabels,
 ): ContactErrors {
   const errors: ContactErrors = {};
   if (Array.from(values.name.trim()).length < 2)
     errors.name = "Informe seu nome com pelo menos 2 caracteres.";
-  const category = normalizeCategory(values.category);
+  const category = normalizeCategory(values.category, labels);
   if (!category) errors.category = "Escolha o tipo de experiência.";
   if (values.date) {
     if (!isCalendarDate(values.date)) errors.date = "Informe uma data válida.";
@@ -91,14 +95,18 @@ export function validateContact(
   return errors;
 }
 
-export function formatContactMessage(values: ContactValues): string {
-  const category = normalizeCategory(values.category);
+export function formatContactMessage(
+  values: ContactValues,
+  labels: Record<string, string> = categoryLabels,
+  brandName = "MR Memorie",
+): string {
+  const category = normalizeCategory(values.category, labels);
   if (!category) throw new Error("Escolha uma categoria válida antes de preparar a mensagem.");
   const lines = [
-    "Olá, MR Memorie! Gostaria de saber mais sobre uma sessão.",
+    `Olá, ${brandName}! Gostaria de saber mais sobre uma sessão.`,
     "",
     `Nome: ${values.name.trim()}`,
-    `Experiência: ${categoryLabels[category]}`,
+    `Experiência: ${labels[category]}`,
   ];
   if (category === "aniversarios") {
     const birthdayType =
@@ -113,6 +121,11 @@ export function formatContactMessage(values: ContactValues): string {
   return lines.join("\n");
 }
 
-export function buildWhatsApp(values: ContactValues): string {
-  return `https://wa.me/351938348287?text=${encodeURIComponent(formatContactMessage(values))}`;
+export function buildWhatsApp(
+  values: ContactValues,
+  phone = "351938348287",
+  labels: Record<string, string> = categoryLabels,
+  brandName = "MR Memorie",
+): string {
+  return `https://wa.me/${phone.replace(/\D/g, "")}?text=${encodeURIComponent(formatContactMessage(values, labels, brandName))}`;
 }

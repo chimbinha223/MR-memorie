@@ -16,10 +16,20 @@ import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as PortfolioRouteImport } from './routes/portfolio'
 import { Route as ContactoRouteImport } from './routes/contacto'
 import { Route as ComoFuncionaRouteImport } from './routes/como-funciona'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as EnsaiosCasuaisRouteImport } from './routes/ensaios.casuais'
 import { Route as EnsaiosCasaisRouteImport } from './routes/ensaios.casais'
 import { Route as EnsaiosAniversariosRouteImport } from './routes/ensaios.aniversarios'
+import { Route as EnsaiosSlugRouteImport } from './routes/ensaios.$slug'
+import { Route as AdminLoginRouteImport } from './routes/admin.login'
+import { Route as ApiAdminUploadRouteImport } from './routes/api.admin.upload'
+import { Route as ApiAdminSessionRouteImport } from './routes/api.admin.session'
+import { Route as ApiAdminPublishRouteImport } from './routes/api.admin.publish'
+import { Route as ApiAdminLogoutRouteImport } from './routes/api.admin.logout'
+import { Route as ApiAdminLoginRouteImport } from './routes/api.admin.login'
+import { Route as ApiAdminContentRouteImport } from './routes/api.admin.content'
 
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
@@ -56,10 +66,20 @@ const ComoFuncionaRoute = ComoFuncionaRouteImport.update({
   path: '/como-funciona',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const EnsaiosCasuaisRoute = EnsaiosCasuaisRouteImport.update({
   id: '/ensaios/casuais',
@@ -76,9 +96,50 @@ const EnsaiosAniversariosRoute = EnsaiosAniversariosRouteImport.update({
   path: '/ensaios/aniversarios',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EnsaiosSlugRoute = EnsaiosSlugRouteImport.update({
+  id: '/ensaios/$slug',
+  path: '/ensaios/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AdminRoute,
+} as any)
+const ApiAdminUploadRoute = ApiAdminUploadRouteImport.update({
+  id: '/api/admin/upload',
+  path: '/api/admin/upload',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminSessionRoute = ApiAdminSessionRouteImport.update({
+  id: '/api/admin/session',
+  path: '/api/admin/session',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminPublishRoute = ApiAdminPublishRouteImport.update({
+  id: '/api/admin/publish',
+  path: '/api/admin/publish',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminLogoutRoute = ApiAdminLogoutRouteImport.update({
+  id: '/api/admin/logout',
+  path: '/api/admin/logout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminLoginRoute = ApiAdminLoginRouteImport.update({
+  id: '/api/admin/login',
+  path: '/api/admin/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminContentRoute = ApiAdminContentRouteImport.update({
+  id: '/api/admin/content',
+  path: '/api/admin/content',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/como-funciona': typeof ComoFuncionaRoute
   '/contacto': typeof ContactoRoute
   '/portfolio': typeof PortfolioRoute
@@ -86,9 +147,18 @@ export interface FileRoutesByFullPath {
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/ensaios/$slug': typeof EnsaiosSlugRoute
   '/ensaios/aniversarios': typeof EnsaiosAniversariosRoute
   '/ensaios/casais': typeof EnsaiosCasaisRoute
   '/ensaios/casuais': typeof EnsaiosCasuaisRoute
+  '/admin/': typeof AdminIndexRoute
+  '/api/admin/content': typeof ApiAdminContentRoute
+  '/api/admin/login': typeof ApiAdminLoginRoute
+  '/api/admin/logout': typeof ApiAdminLogoutRoute
+  '/api/admin/publish': typeof ApiAdminPublishRoute
+  '/api/admin/session': typeof ApiAdminSessionRoute
+  '/api/admin/upload': typeof ApiAdminUploadRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -99,13 +169,23 @@ export interface FileRoutesByTo {
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/ensaios/$slug': typeof EnsaiosSlugRoute
   '/ensaios/aniversarios': typeof EnsaiosAniversariosRoute
   '/ensaios/casais': typeof EnsaiosCasaisRoute
   '/ensaios/casuais': typeof EnsaiosCasuaisRoute
+  '/admin': typeof AdminIndexRoute
+  '/api/admin/content': typeof ApiAdminContentRoute
+  '/api/admin/login': typeof ApiAdminLoginRoute
+  '/api/admin/logout': typeof ApiAdminLogoutRoute
+  '/api/admin/publish': typeof ApiAdminPublishRoute
+  '/api/admin/session': typeof ApiAdminSessionRoute
+  '/api/admin/upload': typeof ApiAdminUploadRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/como-funciona': typeof ComoFuncionaRoute
   '/contacto': typeof ContactoRoute
   '/portfolio': typeof PortfolioRoute
@@ -113,14 +193,24 @@ export interface FileRoutesById {
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/ensaios/$slug': typeof EnsaiosSlugRoute
   '/ensaios/aniversarios': typeof EnsaiosAniversariosRoute
   '/ensaios/casais': typeof EnsaiosCasaisRoute
   '/ensaios/casuais': typeof EnsaiosCasuaisRoute
+  '/admin/': typeof AdminIndexRoute
+  '/api/admin/content': typeof ApiAdminContentRoute
+  '/api/admin/login': typeof ApiAdminLoginRoute
+  '/api/admin/logout': typeof ApiAdminLogoutRoute
+  '/api/admin/publish': typeof ApiAdminPublishRoute
+  '/api/admin/session': typeof ApiAdminSessionRoute
+  '/api/admin/upload': typeof ApiAdminUploadRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/como-funciona'
     | '/contacto'
     | '/portfolio'
@@ -128,9 +218,18 @@ export interface FileRouteTypes {
     | '/robots.txt'
     | '/sitemap.xml'
     | '/sobre'
+    | '/admin/login'
+    | '/ensaios/$slug'
     | '/ensaios/aniversarios'
     | '/ensaios/casais'
     | '/ensaios/casuais'
+    | '/admin/'
+    | '/api/admin/content'
+    | '/api/admin/login'
+    | '/api/admin/logout'
+    | '/api/admin/publish'
+    | '/api/admin/session'
+    | '/api/admin/upload'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -141,12 +240,22 @@ export interface FileRouteTypes {
     | '/robots.txt'
     | '/sitemap.xml'
     | '/sobre'
+    | '/admin/login'
+    | '/ensaios/$slug'
     | '/ensaios/aniversarios'
     | '/ensaios/casais'
     | '/ensaios/casuais'
+    | '/admin'
+    | '/api/admin/content'
+    | '/api/admin/login'
+    | '/api/admin/logout'
+    | '/api/admin/publish'
+    | '/api/admin/session'
+    | '/api/admin/upload'
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/como-funciona'
     | '/contacto'
     | '/portfolio'
@@ -154,13 +263,23 @@ export interface FileRouteTypes {
     | '/robots.txt'
     | '/sitemap.xml'
     | '/sobre'
+    | '/admin/login'
+    | '/ensaios/$slug'
     | '/ensaios/aniversarios'
     | '/ensaios/casais'
     | '/ensaios/casuais'
+    | '/admin/'
+    | '/api/admin/content'
+    | '/api/admin/login'
+    | '/api/admin/logout'
+    | '/api/admin/publish'
+    | '/api/admin/session'
+    | '/api/admin/upload'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
   ComoFuncionaRoute: typeof ComoFuncionaRoute
   ContactoRoute: typeof ContactoRoute
   PortfolioRoute: typeof PortfolioRoute
@@ -168,9 +287,16 @@ export interface RootRouteChildren {
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SobreRoute: typeof SobreRoute
+  EnsaiosSlugRoute: typeof EnsaiosSlugRoute
   EnsaiosAniversariosRoute: typeof EnsaiosAniversariosRoute
   EnsaiosCasaisRoute: typeof EnsaiosCasaisRoute
   EnsaiosCasuaisRoute: typeof EnsaiosCasuaisRoute
+  ApiAdminContentRoute: typeof ApiAdminContentRoute
+  ApiAdminLoginRoute: typeof ApiAdminLoginRoute
+  ApiAdminLogoutRoute: typeof ApiAdminLogoutRoute
+  ApiAdminPublishRoute: typeof ApiAdminPublishRoute
+  ApiAdminSessionRoute: typeof ApiAdminSessionRoute
+  ApiAdminUploadRoute: typeof ApiAdminUploadRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -224,12 +350,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ComoFuncionaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/ensaios/casuais': {
       id: '/ensaios/casuais'
@@ -252,11 +392,80 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EnsaiosAniversariosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ensaios/$slug': {
+      id: '/ensaios/$slug'
+      path: '/ensaios/$slug'
+      fullPath: '/ensaios/$slug'
+      preLoaderRoute: typeof EnsaiosSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/api/admin/upload': {
+      id: '/api/admin/upload'
+      path: '/api/admin/upload'
+      fullPath: '/api/admin/upload'
+      preLoaderRoute: typeof ApiAdminUploadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/session': {
+      id: '/api/admin/session'
+      path: '/api/admin/session'
+      fullPath: '/api/admin/session'
+      preLoaderRoute: typeof ApiAdminSessionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/publish': {
+      id: '/api/admin/publish'
+      path: '/api/admin/publish'
+      fullPath: '/api/admin/publish'
+      preLoaderRoute: typeof ApiAdminPublishRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/logout': {
+      id: '/api/admin/logout'
+      path: '/api/admin/logout'
+      fullPath: '/api/admin/logout'
+      preLoaderRoute: typeof ApiAdminLogoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/login': {
+      id: '/api/admin/login'
+      path: '/api/admin/login'
+      fullPath: '/api/admin/login'
+      preLoaderRoute: typeof ApiAdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/content': {
+      id: '/api/admin/content'
+      path: '/api/admin/content'
+      fullPath: '/api/admin/content'
+      preLoaderRoute: typeof ApiAdminContentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface AdminRouteChildren {
+  AdminLoginRoute: typeof AdminLoginRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminLoginRoute: AdminLoginRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
   ComoFuncionaRoute: ComoFuncionaRoute,
   ContactoRoute: ContactoRoute,
   PortfolioRoute: PortfolioRoute,
@@ -264,9 +473,16 @@ const rootRouteChildren: RootRouteChildren = {
   RobotsDottxtRoute: RobotsDottxtRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SobreRoute: SobreRoute,
+  EnsaiosSlugRoute: EnsaiosSlugRoute,
   EnsaiosAniversariosRoute: EnsaiosAniversariosRoute,
   EnsaiosCasaisRoute: EnsaiosCasaisRoute,
   EnsaiosCasuaisRoute: EnsaiosCasuaisRoute,
+  ApiAdminContentRoute: ApiAdminContentRoute,
+  ApiAdminLoginRoute: ApiAdminLoginRoute,
+  ApiAdminLogoutRoute: ApiAdminLogoutRoute,
+  ApiAdminPublishRoute: ApiAdminPublishRoute,
+  ApiAdminSessionRoute: ApiAdminSessionRoute,
+  ApiAdminUploadRoute: ApiAdminUploadRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

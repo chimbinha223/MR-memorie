@@ -1,4 +1,5 @@
-import { useEffect, useId, useRef, useState } from "react";
+import { useSiteContent } from "./content-context";
+import { useEffect, useMemo, useId, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import {
   buildWhatsApp,
@@ -14,14 +15,19 @@ interface ContactFormProps {
 }
 
 export default function ContactForm({ initialCategory }: ContactFormProps) {
+  const { brand, services } = useSiteContent().content;
+  const labels = useMemo(
+    () => Object.fromEntries(services.map((s) => [s.id, s.title])),
+    [services],
+  );
   const id = useId();
   const formRef = useRef<HTMLFormElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
   const [values, setValues] = useState<ContactValues>({
     name: "",
-    category: normalizeCategory(initialCategory),
+    category: normalizeCategory(initialCategory, labels),
     date: "",
-    location: "Viana do Castelo",
+    location: brand.location,
     birthdayType: "a-definir",
     message: "",
   });
@@ -29,10 +35,10 @@ export default function ContactForm({ initialCategory }: ContactFormProps) {
   const [preview, setPreview] = useState<{ message: string; url: string } | null>(null);
 
   useEffect(() => {
-    setValues((current) => ({ ...current, category: normalizeCategory(initialCategory) }));
+    setValues((current) => ({ ...current, category: normalizeCategory(initialCategory, labels) }));
     setErrors({});
     setPreview(null);
-  }, [initialCategory]);
+  }, [initialCategory, labels]);
 
   useEffect(() => {
     if (preview) previewRef.current?.focus();
@@ -46,7 +52,7 @@ export default function ContactForm({ initialCategory }: ContactFormProps) {
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const nextErrors = validateContact(values, todayInLisbon());
+    const nextErrors = validateContact(values, todayInLisbon(), labels);
     const dateInput = formRef.current?.elements.namedItem("date");
     if (dateInput instanceof HTMLInputElement && dateInput.validity.badInput)
       nextErrors.date = "Complete a data ou deixe o campo vazio.";
@@ -58,7 +64,10 @@ export default function ContactForm({ initialCategory }: ContactFormProps) {
       if (field instanceof HTMLElement) field.focus();
       return;
     }
-    setPreview({ message: formatContactMessage(values), url: buildWhatsApp(values) });
+    setPreview({
+      message: formatContactMessage(values, labels, brand.name),
+      url: buildWhatsApp(values, brand.whatsapp, labels, brand.name),
+    });
   }
 
   const fieldId = (field: ContactField) => `${id}-${field}`;
@@ -104,9 +113,11 @@ export default function ContactForm({ initialCategory }: ContactFormProps) {
             aria-describedby={errors.category ? errorId("category") : undefined}
           >
             <option value="">Escolha uma experiência</option>
-            <option value="casais">Casais</option>
-            <option value="aniversarios">Aniversários</option>
-            <option value="casuais">Ensaios casuais</option>
+            {services.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.title}
+              </option>
+            ))}
           </select>
           {error("category")}
         </div>

@@ -22,7 +22,7 @@ bun run dev
 
 ```sh
 cd app
-bun test src/site/contact.test.ts
+bun run test
 bun run typecheck
 bun run build
 ```
@@ -31,7 +31,7 @@ O projeto usa React 19, TanStack Start, TypeScript e GSAP. O código está em `a
 
 ## Conteúdo e manutenção
 
-- `app/src/site/data.ts`: marca, serviços, perguntas frequentes e lista do portfólio.
+- `app/data/content.json`: conteúdo publicado, editável através do painel.
 - `app/src/site/Site.tsx`: composição das páginas, menu e animações.
 - `app/src/site/ContactForm.tsx`: formulário e prévia da mensagem.
 - `app/src/site/contact.ts`: validação e link para WhatsApp.
@@ -43,6 +43,12 @@ As fotos reais de cada especialidade ainda precisam ser adicionadas ao portfóli
 
 ## Publicação
 
-Esta cópia preserva o código do site criado no Higgsfield. Enviar alterações ao GitHub não atualiza automaticamente o site publicado: a publicação continua pelo fluxo de deploy do Higgsfield. O workflow do GitHub apenas valida o código.
+Esta cópia preserva o código do site criado no Higgsfield. As alterações de conteúdo feitas no painel são guardadas no GitHub e aparecem no site através de leitura dinâmica, com cache de 30 segundos. Mudanças ao código continuam a exigir publicação pelo Higgsfield. O workflow do GitHub valida a compilação e os testes.
 
 As fotografias e o logotipo são materiais da MR Memorie fornecidos para este projeto. Os pacotes incluídos mantêm suas próprias licenças; esta cópia não concede licença aberta sobre a marca ou as fotografias.
+
+## Área de administração
+
+O painel está em `/admin`, com acesso por `/admin/login`. Inclui editores visuais de textos, serviços, contactos, SEO e aparência, além de upload, categorias, destaques e ordenação de fotografias. Não utiliza base de dados.
+
+É necessário configurar os quatro segredos de produção antes de iniciar sessão e publicar. Consulte [ADMINISTRACAO.md](ADMINISTRACAO.md) para a ativação segura e os resultados dos testes. Nunca coloque credenciais no código nem no chat.

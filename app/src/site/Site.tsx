@@ -1,13 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import {
-  brand,
-  services,
-  steps,
-  faqs,
-  portfolio,
-  type ServiceId,
-  type PortfolioPhoto,
-} from "./data";
+import { type ServiceId, type PortfolioPhoto } from "./data";
+import { useSiteContent } from "./content-context";
+import type { CSSProperties } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -16,17 +10,26 @@ export function Photo({
   alt = "A fotógrafa durante uma sessão em estúdio",
   priority = false,
   position,
+  src,
 }: {
   className?: string;
   alt?: string;
   priority?: boolean;
   position?: string;
+  src?: string;
 }) {
+  const { content, resolveAsset } = useSiteContent();
+  const path = src || content.home.hero.image;
+  const standard = path === "/assets/photographer-1440.webp";
   return (
     <img
       className={className}
-      src="/assets/photographer-1440.webp"
-      srcSet="/assets/photographer-640.webp 640w, /assets/photographer-960.webp 960w, /assets/photographer-1440.webp 1440w"
+      src={resolveAsset(path)}
+      srcSet={
+        standard
+          ? "/assets/photographer-640.webp 640w, /assets/photographer-960.webp 960w, /assets/photographer-1440.webp 1440w"
+          : undefined
+      }
       sizes="(max-width: 700px) 100vw, 70vw"
       width={1448}
       height={1086}
@@ -39,17 +42,19 @@ export function Photo({
   );
 }
 export function Logo({ inverse = false }: { inverse?: boolean }) {
+  const { content, resolveAsset } = useSiteContent();
   return (
     <img
       className={"brand-logo" + (inverse ? " inverse" : "")}
-      src="/assets/logo.png"
+      src={resolveAsset(content.brand.logo)}
       width={420}
       height={311}
-      alt="MR Memorie Photography"
+      alt={content.brand.name + " " + content.brand.subtitle}
     />
   );
 }
 function Header({ hero = false }: { hero?: boolean }) {
+  const { brand, services } = useSiteContent().content;
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const toggle = useRef<HTMLButtonElement>(null);
@@ -95,11 +100,11 @@ function Header({ hero = false }: { hero?: boolean }) {
   }, [open]);
   useEffect(() => {
     const desktop = window.matchMedia("(min-width: 801px)");
-    const closeOnDesktop = () => {
+    const close = () => {
       if (desktop.matches) setOpen(false);
     };
-    desktop.addEventListener("change", closeOnDesktop);
-    return () => desktop.removeEventListener("change", closeOnDesktop);
+    desktop.addEventListener("change", close);
+    return () => desktop.removeEventListener("change", close);
   }, []);
   const dark = hero && !scrolled && !open;
   return (
@@ -151,9 +156,7 @@ function Header({ hero = false }: { hero?: boolean }) {
           {[
             ["Início", "/"],
             ["Portfólio", "/portfolio"],
-            ["Casais", "/ensaios/casais"],
-            ["Aniversários", "/ensaios/aniversarios"],
-            ["Casual", "/ensaios/casuais"],
+            ...services.map((s) => [s.title, "/ensaios/" + s.id]),
             ["Como funciona", "/como-funciona"],
             ["Sobre", "/sobre"],
             ["Contato", "/contacto"],
@@ -169,22 +172,30 @@ function Header({ hero = false }: { hero?: boolean }) {
   );
 }
 function Footer() {
+  const { brand, labels, socials } = useSiteContent().content;
   return (
     <footer className="site-footer">
       <div className="footer-grid">
         <div>
           <Logo />
-          <p>
-            Casais, aniversários
-            <br />e momentos seus.
-          </p>
+          <p className="preserve-lines">{labels.footerLine}</p>
         </div>
         <div>
-          <p className="footer-label">VAMOS CONVERSAR</p>
+          <p className="footer-label">{labels.footerContact}</p>
           <a href={"https://wa.me/" + brand.whatsapp} target="_blank" rel="noopener noreferrer">
             {brand.phone}
           </a>
           <p>{brand.location}</p>
+          {brand.email && <a href={"mailto:" + brand.email}>{brand.email}</a>}
+          <div className="public-socials">
+            {Object.entries(socials)
+              .filter(([, url]) => url)
+              .map(([name, url]) => (
+                <a key={name} href={url} target="_blank" rel="noopener noreferrer">
+                  {name}
+                </a>
+              ))}
+          </div>
         </div>
         <nav aria-label="Navegação do rodapé">
           <a href="/portfolio">Portfólio</a>
@@ -194,13 +205,16 @@ function Footer() {
         </nav>
       </div>
       <div className="footer-bottom">
-        <span>© {new Date().getFullYear()} MR Memorie</span>
-        <a href="#top">Voltar ao início ↑</a>
+        <span>
+          © {new Date().getFullYear()} {brand.name}
+        </span>
+        <a href="#top">{labels.backToTop} ↑</a>
       </div>
     </footer>
   );
 }
 export function Frame({ children, hero = false }: { children: ReactNode; hero?: boolean }) {
+  const { appearance } = useSiteContent().content;
   const scope = useRef<HTMLDivElement>(null);
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -246,7 +260,22 @@ export function Frame({ children, hero = false }: { children: ReactNode; hero?: 
     return () => mm.revert();
   }, []);
   return (
-    <div ref={scope} id="top">
+    <div
+      ref={scope}
+      id="top"
+      className="public-site"
+      style={
+        {
+          "--ink": appearance.text,
+          "--green": appearance.accent,
+          "--brand-primary": appearance.primary,
+          "--brand-bg": appearance.background,
+          "--brand-text": appearance.text,
+          background: appearance.background,
+          color: appearance.text,
+        } as CSSProperties
+      }
+    >
       <a className="skip-link" href="#main">
         Ir para o conteúdo
       </a>
@@ -266,15 +295,19 @@ export function Heading({ title, text }: { title: string; text?: string }) {
   );
 }
 export function ServiceCards() {
+  const { services, home, labels } = useSiteContent().content;
   return (
     <section id="ensaios" className="section services-section">
-      <Heading
-        title="A vida acontece. A fotografia fica."
-        text="Há dias marcados no calendário. Outros merecem ser lembrados simplesmente por serem seus."
-      />
+      <Heading title={home.servicesTitle} text={home.servicesIntro} />
       <div className="service-grid">
         {services.map((s, i) => (
-          <article className={"service-card service-" + i} key={s.id} data-reveal>
+          <article
+            className={
+              "service-card" + (s.image === "/assets/photographer-1440.webp" ? " service-" + i : "")
+            }
+            key={s.id}
+            data-reveal
+          >
             <h3>{s.title}</h3>
             <p className="service-tagline">{s.tagline}</p>
             <a
@@ -282,17 +315,14 @@ export function ServiceCards() {
               className="service-media"
               aria-label={"Conhecer os ensaios de " + s.title}
             >
-              <Photo
-                position={s.focus}
-                alt="Detalhe da imagem de apresentação da fotógrafa em estúdio"
-              />
+              <Photo src={s.image} position={s.focus} alt={s.alt} />
               <span className="media-arrow" aria-hidden="true">
                 ↗
               </span>
             </a>
             <p className="service-summary">{s.summary}</p>
             <a className="service-action" href={"/ensaios/" + s.id}>
-              Conhecer o ensaio
+              {labels.serviceCTA}
             </a>
           </article>
         ))}
@@ -301,6 +331,7 @@ export function ServiceCards() {
   );
 }
 export function Process() {
+  const { steps } = useSiteContent().content;
   return (
     <div className="process-grid">
       {steps.map((s) => (
@@ -313,6 +344,7 @@ export function Process() {
   );
 }
 export function FAQ() {
+  const { faqs } = useSiteContent().content;
   return (
     <div className="faq-list">
       {faqs.map(([q, a]) => (
@@ -328,110 +360,96 @@ export function FAQ() {
   );
 }
 export function Closing() {
+  const { home, labels } = useSiteContent().content;
   return (
     <section className="closing">
       <div className="closing-image" data-parallax>
-        <Photo alt="" position="20% 60%" />
+        <Photo src={home.closingImage} alt="" position="20% 60%" />
       </div>
       <div className="closing-scrim" />
       <div className="closing-copy" data-reveal>
-        <h2>
-          Que momento
-          <br />
-          <em>você quer guardar?</em>
-        </h2>
-        <p>Conte um pouco sobre o que está imaginando.</p>
+        <h2 className="preserve-lines">{home.closingTitle}</h2>
+        <p>{home.closingIntro}</p>
         <a className="closing-action" href="/contacto">
-          Pedir orçamento
+          {labels.contactCTA}
         </a>
       </div>
     </section>
   );
 }
 export function Home() {
+  const { content, resolveAsset } = useSiteContent();
+  const { home, brand, labels, portfolio, testimonials } = content;
   return (
     <Frame hero>
       <section className="hero">
         <div className="hero-image" data-parallax>
-          <Photo
-            priority
-            alt="Fotógrafa da MR Memorie com a câmera em estúdio"
-            position="65% 40%"
-          />
+          <Photo src={home.hero.image} priority alt={home.hero.alt} position="65% 40%" />
         </div>
         <div className="hero-scrim" />
         <div className="hero-copy">
-          <p className="hero-kicker">FOTOGRAFIA EM VIANA DO CASTELO</p>
+          <p className="hero-kicker">{home.hero.eyebrow}</p>
           <h1>
-            Fotografias para guardar
+            {home.hero.title}
             <br />
-            <em>o que você sente.</em>
+            <em>{home.hero.emphasis}</em>
           </h1>
-          <p>
-            Casais, aniversários e momentos espontâneos.
-            <br />
-            Com espaço para ser você.
-          </p>
+          <p className="preserve-lines">{home.hero.description}</p>
           <div className="hero-actions">
-            <a className="hero-primary" href="#ensaios">
-              Ver ensaios
+            <a className="hero-primary" href={home.hero.primaryHref}>
+              {home.hero.primaryText}
             </a>
-            <a className="hero-secondary" href="/contacto">
-              Pedir orçamento
+            <a className="hero-secondary" href={home.hero.secondaryHref}>
+              {home.hero.secondaryText}
             </a>
           </div>
         </div>
         <div className="hero-bottom">
-          <span>MR MEMORIE PHOTOGRAPHY</span>
-          <span>VIANA DO CASTELO · PORTUGAL</span>
+          <span>
+            {brand.name.toUpperCase()} {brand.subtitle.toUpperCase()}
+          </span>
+          <span>{brand.location.toUpperCase()}</span>
         </div>
       </section>
       <ServiceCards />
       <section className="editorial-section section">
         <div className="editorial-image">
-          <Photo alt="O olhar atento da fotógrafa durante o trabalho" position="75% 25%" />
+          <Photo
+            src={home.editorial.image}
+            alt="O olhar atento da fotógrafa durante o trabalho"
+            position="75% 25%"
+          />
         </div>
         <div className="editorial-copy" data-reveal>
-          <p className="script-line">Um olhar mais próximo</p>
-          <h2>
-            Entre os grandes dias
-            <br />e os pequenos gestos.
-          </h2>
+          <p className="script-line">{home.editorial.eyebrow}</p>
+          <h2 className="preserve-lines">{home.editorial.title}</h2>
           <span className="hairline" />
-          <p>
-            O abraço que chega sem aviso. O riso no meio da conversa. Os detalhes que fazem um dia
-            ser só seu.
-          </p>
-          <p>A fotografia começa antes do clique: começa no cuidado de olhar.</p>
+          {home.editorial.paragraphs.map((p, i) => (
+            <p key={i}>{p}</p>
+          ))}
           <a className="editorial-link" href="/sobre">
-            Conhecer a proposta <span aria-hidden="true">↗</span>
+            {labels.moreAbout} <span aria-hidden="true">↗</span>
           </a>
         </div>
       </section>
       <section className="process-section section">
-        <Heading
-          title="Tudo começa com uma conversa."
-          text="Você traz a sua história. Juntos, pensamos na melhor forma de guardá-la."
-        />
+        <Heading title={home.processTitle} text={home.processIntro} />
         <Process />
         <a className="process-action" href="/como-funciona">
-          Ver como funciona <span aria-hidden="true">→</span>
+          {labels.moreProcess} <span aria-hidden="true">→</span>
         </a>
       </section>
       <section className="portfolio-preview section">
         <div data-reveal>
-          <p className="script-line">Histórias que ficam</p>
-          <h2>
-            Um lugar para
-            <br />
-            as suas memórias.
-          </h2>
+          <p className="script-line">{home.portfolioEyebrow}</p>
+          <h2 className="preserve-lines">{home.portfolioTitle}</h2>
           <p>
-            O portfólio está sendo preparado. Enquanto isso, conheça as experiências e conte a sua
-            ideia.
+            {portfolio.length && home.portfolioIntro.startsWith("O portfólio está sendo preparado")
+              ? "Uma seleção de momentos e histórias para guardar."
+              : home.portfolioIntro}
           </p>
           <a className="portfolio-action" href="/portfolio">
-            Ver portfólio <span aria-hidden="true">↗</span>
+            {labels.portfolioCTA} <span aria-hidden="true">↗</span>
           </a>
         </div>
         <div className="portfolio-detail">
@@ -441,6 +459,39 @@ export function Home() {
           />
         </div>
       </section>
+      {portfolio.some((p) => p.featured) && (
+        <section className="section">
+          <Heading title="Fotografias em destaque" />
+          <div className="featured-photos">
+            {portfolio
+              .filter((p) => p.featured)
+              .slice(0, 6)
+              .map((p) => (
+                <a key={p.id} href="/portfolio">
+                  <img src={resolveAsset(p.src)} alt={p.alt} loading="lazy" />
+                  <span>{p.title}</span>
+                </a>
+              ))}
+          </div>
+        </section>
+      )}
+      {testimonials.length > 0 && (
+        <section className="section">
+          <Heading title={home.testimonialsTitle} />
+          <div className="testimonials-grid">
+            {testimonials.map((t) => (
+              <blockquote key={t.id}>
+                {t.photo && <img src={resolveAsset(t.photo)} alt={t.name} />}
+                <p>{t.quote}</p>
+                <footer>
+                  {t.name}
+                  {t.context && <small>{t.context}</small>}
+                </footer>
+              </blockquote>
+            ))}
+          </div>
+        </section>
+      )}
       <Closing />
     </Frame>
   );
@@ -464,22 +515,26 @@ export function InnerHero({
   );
 }
 export function ServicePage({ id }: { id: ServiceId }) {
-  const s = services.find((x) => x.id === id)!;
+  const { services, labels } = useSiteContent().content;
+  const s = services.find((x) => x.id === id);
+  if (!s)
+    return (
+      <Frame>
+        <InnerHero title="Experiência indisponível" />
+        <section className="section">
+          <a href="/#ensaios">Ver as experiências disponíveis</a>
+        </section>
+      </Frame>
+    );
   return (
     <Frame>
       <InnerHero title={s.headline} text={s.summary} kicker={s.title} />
       <section className="service-detail section">
         <div className="service-detail-image">
-          <Photo position={s.focus} />
+          <Photo src={s.image} position={s.focus} alt={s.alt} />
         </div>
         <div data-reveal>
-          <h2>
-            {id === "aniversarios"
-              ? "Uma celebração do seu jeito."
-              : id === "casais"
-                ? "Cada casal tem seu próprio ritmo."
-                : "Retratos com o seu ritmo."}
-          </h2>
+          <h2>{s.sectionTitle}</h2>
           <p>{s.intro}</p>
           <p>{s.detail}</p>
           <ul className="occasion-list">
@@ -488,7 +543,7 @@ export function ServicePage({ id }: { id: ServiceId }) {
             ))}
           </ul>
           <a className="detail-action" href={"/contacto?categoria=" + id}>
-            Pedir orçamento
+            {s.buttonLabel || labels.contactCTA}
           </a>
         </div>
       </section>
@@ -516,38 +571,26 @@ export function ServicePage({ id }: { id: ServiceId }) {
   );
 }
 export function About() {
+  const { brand, about, labels } = useSiteContent().content;
   return (
     <Frame>
-      <InnerHero
-        title="Espaço para sentir. Tempo para observar."
-        kicker="MR MEMORIE"
-        text="Fotografia de pessoas em seus próprios momentos, em Viana do Castelo."
-      />
+      <InnerHero title={about.title} kicker={brand.name.toUpperCase()} text={about.subtitle} />
       <section className="about-section section">
         <div className="about-image">
-          <Photo alt="Imagem de apresentação da fotógrafa da MR Memorie" position="70% 35%" />
+          <Photo
+            src={about.image}
+            alt={"Imagem de apresentação da " + brand.name}
+            position="70% 35%"
+          />
         </div>
         <div data-reveal>
-          <p className="script-line">Prazer em receber você.</p>
-          <h2>
-            O cuidado está
-            <br />
-            no olhar.
-          </h2>
-          <p>
-            A proposta da MR Memorie é fotografar a cumplicidade de um casal, a energia de uma festa
-            e a expressão de quem se permite estar diante da câmera.
-          </p>
-          <p>
-            Uma fotografia pode mostrar como foi um dia. Queremos que ela também faça lembrar como
-            foi estar ali.
-          </p>
-          <p>
-            Conte a sua ideia. A conversa é o primeiro passo para uma experiência com a sua
-            personalidade.
-          </p>
+          <p className="script-line">{about.eyebrow}</p>
+          <h2 className="preserve-lines">{about.heading}</h2>
+          {about.paragraphs.map((p, i) => (
+            <p key={i}>{p}</p>
+          ))}
           <a className="about-action" href="/contacto">
-            Pedir orçamento
+            {labels.contactCTA}
           </a>
         </div>
       </section>
@@ -584,13 +627,16 @@ function Lightbox({
   onPrevious: () => void;
   onNext: () => void;
 }) {
+  const { resolveAsset } = useSiteContent();
   const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
+    const previousFocus = document.activeElement;
     dialog.current?.showModal();
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = previous;
+      if (previousFocus instanceof HTMLElement) previousFocus.focus();
     };
   }, []);
   return (
@@ -616,8 +662,11 @@ function Lightbox({
         ‹
       </button>
       <figure>
-        <img src={photo.src} alt={photo.alt} />
-        <figcaption>{photo.title}</figcaption>
+        <img src={resolveAsset(photo.src)} alt={photo.alt} />
+        <figcaption>
+          {photo.title}
+          {photo.description && <p>{photo.description}</p>}
+        </figcaption>
       </figure>
       <button onClick={onNext} aria-label="Próxima fotografia">
         ›
@@ -626,6 +675,8 @@ function Lightbox({
   );
 }
 export function Portfolio() {
+  const { content, resolveAsset } = useSiteContent();
+  const { portfolio, services, categories, labels } = content;
   const [filter, setFilter] = useState<ServiceId | "todas">("todas");
   const [selected, setSelected] = useState<number | null>(null);
   const photos = portfolio.filter((p) => filter === "todas" || p.category === filter);
@@ -639,7 +690,7 @@ export function Portfolio() {
         {portfolio.length > 0 ? (
           <>
             <div className="portfolio-filters" aria-label="Filtrar fotografias">
-              {[{ id: "todas", title: "Todas" }, ...services].map((s) => (
+              {[{ id: "todas", title: "Todas" }, ...categories].map((s) => (
                 <button
                   key={s.id}
                   aria-pressed={s.id === filter}
@@ -655,7 +706,7 @@ export function Portfolio() {
             <div className="gallery-grid">
               {photos.map((p, i) => (
                 <button key={p.src} onClick={() => setSelected(i)} aria-label={"Ampliar " + p.alt}>
-                  <img src={p.src} alt={p.alt} loading="lazy" />
+                  <img src={resolveAsset(p.src)} alt={p.alt} loading="lazy" />
                 </button>
               ))}
             </div>
@@ -698,6 +749,7 @@ export function Portfolio() {
   );
 }
 export function Privacy() {
+  const { brand } = useSiteContent().content;
   return (
     <Frame>
       <InnerHero title="Privacidade" text="Informações sobre o contato e a navegação neste site." />
@@ -721,7 +773,7 @@ export function Privacy() {
         <h2>Fale com a MR Memorie</h2>
         <p>
           Para assuntos relacionados ao contato ou aos dados compartilhados na conversa, use o
-          número <a href="tel:+351938348287">{brand.phone}</a>.
+          número <a href={"tel:" + brand.phone.replace(/[^+\d]/g, "")}>{brand.phone}</a>.
         </p>
         <a className="legal-back" href="/contacto">
           Voltar ao contato →

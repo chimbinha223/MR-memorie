@@ -1555,3 +1555,5 @@ button:active {
 .field textarea[aria-invalid="true"] {
   border-color: #9c2727;
 }
+
+.preserve-lines{white-space:pre-line}.public-site .pill,.public-site .detail-action,.public-site .empty-action{background:var(--green)}.public-site .site-footer,.public-site .solid{background:var(--brand-bg)}.public-site .hero-primary{background:var(--brand-primary)}.public-site .hero-primary:hover{background:#fff;color:var(--brand-primary)}.public-socials{display:flex;flex-wrap:wrap;gap:16px;margin-top:20px}.featured-photos,.testimonials-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}.featured-photos img{width:100%;height:360px;object-fit:cover}.featured-photos span{display:block;padding-top:14px}.testimonials-grid blockquote{margin:0;padding:28px;background:var(--paper,#f7f5f0)}.testimonials-grid blockquote img{width:64px;height:64px;object-fit:cover;border-radius:50%}.testimonials-grid small{display:block}@media(max-width:700px){.featured-photos,.testimonials-grid{grid-template-columns:1fr}}

@@ -1,13 +1,28 @@
-import { brand } from "./data";
-export function pageHead(path: string, title: string, description: string) {
+import { defaultSnapshot } from "./content-context";
+import type { ContentSnapshot } from "../admin/content-schema";
+export function pageHead(
+  path: string,
+  title: string,
+  description: string,
+  snapshot?: ContentSnapshot,
+) {
+  const { content } = snapshot || defaultSnapshot;
+  const override = content.seo.pages[path];
+  const service = content.services.find((s) => "/ensaios/" + s.id === path);
+  const finalTitle =
+    override?.title ||
+    (path === "/" ? content.seo.title : (service?.title || title) + " | " + content.brand.name);
+  const finalDescription =
+    override?.description ||
+    (path === "/" ? content.seo.description : service?.summary || description);
   return {
     meta: [
-      { title: title + " | MR Memorie" },
-      { name: "description", content: description },
-      { property: "og:title", content: title + " | MR Memorie" },
-      { property: "og:description", content: description },
-      { property: "og:url", content: brand.origin + path },
+      { title: finalTitle },
+      { name: "description", content: finalDescription },
+      { property: "og:title", content: finalTitle },
+      { property: "og:description", content: finalDescription },
+      { property: "og:url", content: content.brand.origin + path },
     ],
-    links: [{ rel: "canonical", href: brand.origin + path }],
+    links: [{ rel: "canonical", href: content.brand.origin + path }],
   };
 }

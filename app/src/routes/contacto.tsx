@@ -1,25 +1,26 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Frame, InnerHero } from "../site/Site";
 import ContactForm from "../site/ContactForm";
-import { brand } from "../site/data";
+import { useSiteContent } from "../site/content-context";
 import { pageHead } from "../site/seo";
 export const Route = createFileRoute("/contacto")({
   validateSearch: (search: Record<string, unknown>) => ({
     categoria:
-      typeof search.categoria === "string" &&
-      ["casais", "aniversarios", "casuais"].includes(search.categoria)
+      typeof search.categoria === "string" && /^[a-z0-9-]{1,70}$/.test(search.categoria)
         ? search.categoria
         : "",
   }),
-  head: () =>
+  head: ({ matches }) =>
     pageHead(
       "/contacto",
       "Pedir orçamento",
       "Conte a sua ideia e converse com a MR Memorie pelo WhatsApp.",
+      matches[0]?.loaderData,
     ),
   component: Contact,
 });
 function Contact() {
+  const { brand } = useSiteContent().content;
   const { categoria } = Route.useSearch();
   return (
     <Frame>

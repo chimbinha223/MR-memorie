@@ -1,0 +1,223 @@
+{
+  "version": 1,
+  "brand": {
+    "name": "MR Memorie",
+    "location": "Viana do Castelo, Portugal",
+    "phone": "+351 938 348 287",
+    "whatsapp": "351938348287",
+    "origin": "https://mr-memorie.higgsfield.app",
+    "subtitle": "Photography",
+    "email": "",
+    "logo": "/assets/logo.png"
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "FOTOGRAFIA EM VIANA DO CASTELO",
+      "title": "Fotografias para guardar",
+      "emphasis": "o que você sente.",
+      "description": "Casais, aniversários e momentos espontâneos.\nCom espaço para ser você.",
+      "image": "/assets/photographer-1440.webp",
+      "alt": "Fotógrafa da MR Memorie com a câmera em estúdio",
+      "primaryText": "Ver ensaios",
+      "primaryHref": "/#ensaios",
+      "secondaryText": "Pedir orçamento",
+      "secondaryHref": "/contacto"
+    },
+    "servicesTitle": "A vida acontece. A fotografia fica.",
+    "servicesIntro": "Há dias marcados no calendário. Outros merecem ser lembrados simplesmente por serem seus.",
+    "editorial": {
+      "eyebrow": "Um olhar mais próximo",
+      "title": "Entre os grandes dias\ne os pequenos gestos.",
+      "paragraphs": [
+        "O abraço que chega sem aviso. O riso no meio da conversa. Os detalhes que fazem um dia ser só seu.",
+        "A fotografia começa antes do clique: começa no cuidado de olhar."
+      ],
+      "image": "/assets/photographer-1440.webp"
+    },
+    "processTitle": "Tudo começa com uma conversa.",
+    "processIntro": "Você traz a sua história. Juntos, pensamos na melhor forma de guardá-la.",
+    "portfolioEyebrow": "Histórias que ficam",
+    "portfolioTitle": "Um lugar para\nas suas memórias.",
+    "portfolioIntro": "O portfólio está sendo preparado. Enquanto isso, conheça as experiências e conte a sua ideia.",
+    "closingTitle": "Que momento\nvocê quer guardar?",
+    "closingIntro": "Conte um pouco sobre o que está imaginando.",
+    "closingImage": "/assets/photographer-1440.webp",
+    "testimonialsTitle": "O que dizem sobre a experiência"
+  },
+  "labels": {
+    "serviceCTA": "Conhecer o ensaio",
+    "contactCTA": "Pedir orçamento",
+    "moreAbout": "Conhecer a proposta",
+    "moreProcess": "Ver como funciona",
+    "portfolioCTA": "Ver portfólio",
+    "backToTop": "Voltar ao início",
+    "footerLine": "Casais, aniversários\ne momentos seus.",
+    "footerContact": "VAMOS CONVERSAR"
+  },
+  "services": [
+    {
+      "id": "casais",
+      "title": "Casais",
+      "tagline": "O jeito de vocês, juntos.",
+      "summary": "Uma caminhada, uma troca de olhares, um lugar com significado. Um ensaio para a história que vocês estão vivendo.",
+      "headline": "O jeito de vocês, juntos.",
+      "intro": "Cada casal tem seu próprio ritmo. Pode ser um reencontro, uma data especial ou simplesmente a vontade de guardar como é estar juntos.",
+      "detail": "Pensem nos lugares que fazem parte da relação: onde se conheceram, um passeio favorito ou um cenário que desejam descobrir.",
+      "occasions": [
+        "Um ensaio a dois",
+        "Aniversário de namoro ou casamento",
+        "Uma nova fase da relação"
+      ],
+      "focus": "70% 35%",
+      "image": "/assets/photographer-1440.webp",
+      "alt": "Imagem de apresentação da fotógrafa em estúdio",
+      "sectionTitle": "Cada casal tem seu próprio ritmo.",
+      "buttonLabel": "Pedir orçamento"
+    },
+    {
+      "id": "aniversarios",
+      "title": "Aniversários",
+      "tagline": "Mais um ano. Tantas histórias.",
+      "summary": "Os encontros, os detalhes, o abraço depois dos parabéns. Fotografias para celebrar uma nova fase.",
+      "headline": "Mais um ano. Tantas histórias.",
+      "intro": "Um aniversário pode reunir todo mundo ou reservar um momento só para você. Escolha entre fotografar a festa e criar um ensaio comemorativo.",
+      "detail": "Na cobertura, a atenção acompanha a celebração e os convidados. No ensaio, reservamos um tempo para retratos que marquem este capítulo.",
+      "occasions": [
+        "Cobertura de festa",
+        "Ensaio comemorativo",
+        "Um encontro com quem faz parte da sua história"
+      ],
+      "focus": "35% 65%",
+      "image": "/assets/photographer-1440.webp",
+      "alt": "Imagem de apresentação da fotógrafa em estúdio",
+      "sectionTitle": "Uma celebração do seu jeito.",
+      "buttonLabel": "Pedir orçamento"
+    },
+    {
+      "id": "casuais",
+      "title": "Casual",
+      "tagline": "Um momento para ser você.",
+      "summary": "Retratos em um ritmo leve, sozinho ou em boa companhia. Sem precisar de uma ocasião especial.",
+      "headline": "Você não precisa de uma ocasião.",
+      "intro": "Um passeio, uma nova fase ou a vontade de se ver de outra maneira. O ensaio casual começa nos detalhes com os quais você se identifica.",
+      "detail": "Você pode imaginar um momento só seu ou incluir amigos. Conte quais lugares, roupas e ideias fazem parte dessa experiência.",
+      "occasions": [
+        "Retratos individuais",
+        "Um encontro entre amigos",
+        "Um dia para fazer algo por você"
+      ],
+      "focus": "75% 50%",
+      "image": "/assets/photographer-1440.webp",
+      "alt": "Imagem de apresentação da fotógrafa em estúdio",
+      "sectionTitle": "Retratos com o seu ritmo.",
+      "buttonLabel": "Pedir orçamento"
+    }
+  ],
+  "categories": [
+    {
+      "id": "casamentos",
+      "title": "Casamentos"
+    },
+    {
+      "id": "eventos",
+      "title": "Eventos"
+    },
+    {
+      "id": "retratos",
+      "title": "Retratos"
+    },
+    {
+      "id": "casais",
+      "title": "Casais"
+    },
+    {
+      "id": "aniversarios",
+      "title": "Aniversários"
+    },
+    {
+      "id": "casuais",
+      "title": "Casual"
+    },
+    {
+      "id": "lifestyle",
+      "title": "Lifestyle"
+    },
+    {
+      "id": "outros",
+      "title": "Outros"
+    }
+  ],
+  "portfolio": [],
+  "steps": [
+    {
+      "title": "Conte a sua ideia",
+      "text": "Escolha a experiência e compartilhe a data, o local e o que está imaginando. Tudo pode começar com uma conversa."
+    },
+    {
+      "title": "Combinamos os detalhes",
+      "text": "Formato, duração, valores e condições de entrega fazem parte da proposta, antes da reserva."
+    },
+    {
+      "title": "Viva o momento",
+      "text": "No dia, a experiência segue o ritmo combinado. Depois, as fotografias recebem o cuidado definido na proposta."
+    }
+  ],
+  "faqs": [
+    [
+      "Ainda não tenho data ou local. Posso entrar em contato?",
+      "Sim. Indique que a data ou o local estão a definir e conte o que já imaginou para a sessão."
+    ],
+    [
+      "Preciso saber posar?",
+      "O ensaio não exige experiência diante da câmera. Conte como você se sente e que tipo de fotografia combina com você."
+    ],
+    [
+      "Quanto tempo dura uma sessão?",
+      "A duração depende do formato e será definida na proposta, antes da reserva."
+    ],
+    [
+      "Quantas fotografias vou receber?",
+      "A quantidade, o formato dos arquivos e as condições de seleção serão informados na proposta."
+    ],
+    [
+      "Quando recebo as fotografias?",
+      "O prazo e a forma de entrega serão combinados antes da reserva."
+    ],
+    [
+      "Posso escolher um lugar especial?",
+      "Compartilhe a sua ideia. A viabilidade do espaço e eventuais deslocamentos são avaliados no planejamento."
+    ]
+  ],
+  "testimonials": [],
+  "about": {
+    "title": "Espaço para sentir. Tempo para observar.",
+    "subtitle": "Fotografia de pessoas em seus próprios momentos, em Viana do Castelo.",
+    "eyebrow": "Prazer em receber você.",
+    "heading": "O cuidado está\nno olhar.",
+    "paragraphs": [
+      "A proposta da MR Memorie é fotografar a cumplicidade de um casal, a energia de uma festa e a expressão de quem se permite estar diante da câmera.",
+      "Uma fotografia pode mostrar como foi um dia. Queremos que ela também faça lembrar como foi estar ali.",
+      "Conte a sua ideia. A conversa é o primeiro passo para uma experiência com a sua personalidade."
+    ],
+    "image": "/assets/photographer-1440.webp"
+  },
+  "socials": {
+    "instagram": "",
+    "facebook": "",
+    "tiktok": "",
+    "youtube": ""
+  },
+  "seo": {
+    "title": "Fotografia em Viana do Castelo | MR Memorie",
+    "description": "Fotografia de casais, aniversários e momentos espontâneos em Viana do Castelo, Portugal.",
+    "ogImage": "/assets/mr-memorie-og.jpg",
+    "noindex": true,
+    "pages": {}
+  },
+  "appearance": {
+    "primary": "#000000",
+    "accent": "#004b37",
+    "background": "#ffffff",
+    "text": "#181818"
+  }
+}

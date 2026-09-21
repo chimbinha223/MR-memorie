@@ -40,5 +40,5 @@ jobs:
           HF_DESIGN_INSPECTOR: "1"
         run: bun run build
 
-      - name: Contact tests
-        run: bun test src/site/contact.test.ts
+      - name: Application and administrator tests
+        run: bun run test

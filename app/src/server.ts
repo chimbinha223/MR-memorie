@@ -46,9 +46,16 @@ export default {
       return applySecurityHeaders(Response.redirect(url.toString(), 301));
     }
     try {
+      if (url.pathname === "/admin" || (url.pathname.startsWith("/admin/") && url.pathname !== "/admin/login")) {
+        const { adminEnv } = await import("./admin/env.server");
+        const { authenticated } = await import("./admin/auth.server");
+        if (!await authenticated(request, await adminEnv())) return applySecurityHeaders(new Response(null, { status:302, headers:{ Location:"/admin/login", "Cache-Control":"no-store" } }));
+      }
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
-      return applySecurityHeaders(await normalizeCatastrophicSsrResponse(response));
+      const normalized = await normalizeCatastrophicSsrResponse(response);
+      if (url.pathname.startsWith("/admin") || url.pathname.startsWith("/api/admin")) { normalized.headers.set("Cache-Control","no-store"); normalized.headers.set("X-Robots-Tag","noindex, nofollow"); }
+      return applySecurityHeaders(normalized);
     } catch (error) {
       console.error(error);
       return applySecurityHeaders(
