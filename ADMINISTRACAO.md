@@ -7,8 +7,10 @@ A versão React/TanStack existente foi adaptada. O site Next.js/Vercel não foi 
 1. No projeto `app`, instale as dependências com `bun install --frozen-lockfile`.
 2. Execute `node scripts/setup-admin.mjs` num terminal interativo. Escolha o email e uma palavra-passe com pelo menos 12 caracteres. O programa não mostra a palavra-passe e cria apenas o hash bcrypt e o segredo de sessão em `app/.env.admin.local`, ignorado pelo Git.
 3. Nas definições do website MR Memorie no Higgsfield, configure os segredos `ADMIN_EMAIL`, `ADMIN_PASSWORD_HASH` e `AUTH_SECRET` com os valores desse ficheiro. Não coloque estes valores no chat, no código, nem em variáveis com prefixo VITE_.
-4. No GitHub, crie um token de acesso pessoal com permissões granulares, limitado ao repositório `chimbinha223/MR-memorie`, com **Contents: Read and write**. Configure-o como `GITHUB_TOKEN` nos segredos do site no Higgsfield.
-5. Os valores por omissão são `GITHUB_OWNER=chimbinha223`, `GITHUB_REPO=MR-memorie`, `GITHUB_BRANCH=main`. Só configure estes três nomes se mudar o destino.
+O token usa o nome exclusivo `MR_MEMORIE_GITHUB_TOKEN` para evitar qualquer acesso a credenciais internas da plataforma. A aplicação só lê os nomes enumerados no seu módulo de configuração.
+
+4. No GitHub, crie um token de acesso pessoal com permissões granulares, limitado ao repositório `chimbinha223/MR-memorie`, com **Contents: Read and write**. Configure-o como `MR_MEMORIE_GITHUB_TOKEN` nos segredos do site no Higgsfield.
+5. Os valores por omissão são `MR_MEMORIE_GITHUB_OWNER=chimbinha223`, `MR_MEMORIE_GITHUB_REPO=MR-memorie`, `MR_MEMORIE_GITHUB_BRANCH=main`. Só configure estes três nomes se mudar o destino.
 6. Volte a publicar a aplicação no Higgsfield para aplicar os segredos. Abra https://mr-memorie.higgsfield.app/admin/login.
 
 Sem estes segredos, o login permanece desativado. Nunca existe palavra-passe predefinida. Alterar o hash ou o segredo invalida as sessões anteriores. Para gerar novamente as credenciais, preserve ou remova conscientemente o ficheiro local existente; o programa não o substitui automaticamente.

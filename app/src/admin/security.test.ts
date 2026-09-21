@@ -138,9 +138,9 @@ describe("uploads and content validation", () => {
     content.brand.logo = "/images/../../secrets.png";
     expect(contentSchema.safeParse(content).success).toBe(false);
     content.brand.logo = defaults.brand.logo;
-    content.GITHUB_TOKEN = "bad";
+    content.MR_MEMORIE_GITHUB_TOKEN = "bad";
     expect(contentSchema.safeParse(content).success).toBe(false);
-    delete content.GITHUB_TOKEN;
+    delete content.MR_MEMORIE_GITHUB_TOKEN;
     content.portfolio = [
       {
         id: "1",

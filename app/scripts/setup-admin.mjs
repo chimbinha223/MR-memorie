@@ -36,7 +36,7 @@ try {
     { mode: 0o600, flag: "wx" },
   );
   console.log(
-    "Criado app/.env.admin.local, ignorado pelo Git. Copie os três valores para os segredos do site no Higgsfield. Nunca os envie por chat. Adicione também GITHUB_TOKEN nas definições.",
+    "Criado app/.env.admin.local, ignorado pelo Git. Copie os três valores para os segredos do site no Higgsfield. Nunca os envie por chat. Adicione também MR_MEMORIE_GITHUB_TOKEN nas definições.",
   );
 } finally {
   hidden = false;

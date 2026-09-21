@@ -18,7 +18,9 @@ export async function github(env: AdminEnv, path: string, method = "GET", body?:
       Accept: "application/vnd.github+json",
       "X-GitHub-Api-Version": "2022-11-28",
       "User-Agent": "MR-Memorie-Admin",
-      ...(env.GITHUB_TOKEN ? { Authorization: "Bearer " + env.GITHUB_TOKEN } : {}),
+      ...(env.MR_MEMORIE_GITHUB_TOKEN
+        ? { Authorization: "Bearer " + env.MR_MEMORIE_GITHUB_TOKEN }
+        : {}),
       ...(body ? { "Content-Type": "application/json" } : {}),
     },
     body: body ? JSON.stringify(body) : undefined,
@@ -181,7 +183,7 @@ export async function publish(
   env: AdminEnv,
   input: { content: unknown; revision: string; uploads: UploadReceipt[]; mutationId: string },
 ) {
-  if (!env.GITHUB_TOKEN)
+  if (!env.MR_MEMORIE_GITHUB_TOKEN)
     throw new ApiError(503, "Configure a ligação ao GitHub antes de publicar.");
   const parsed = contentSchema.safeParse(input.content);
   if (!parsed.success)

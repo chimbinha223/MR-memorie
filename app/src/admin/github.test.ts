@@ -1,7 +1,10 @@
 import { test, expect, afterEach } from "bun:test";
 import { publish, makeReceipt, checkReceipt, snapshot, base64 } from "./github.server";
 import defaults from "../../data/content.json";
-const env = { GITHUB_TOKEN: "test-only-token", AUTH_SECRET: "test-only-signing-secret-".repeat(3) };
+const env = {
+  MR_MEMORIE_GITHUB_TOKEN: "test-only-token",
+  AUTH_SECRET: "test-only-signing-secret-".repeat(3),
+};
 const originalFetch = globalThis.fetch;
 afterEach(() => {
   globalThis.fetch = originalFetch;
@@ -118,7 +121,7 @@ test("rejects unsigned image references and tampered receipts", async () => {
   const receipt = await makeReceipt(path, blob, env);
   await expect(checkReceipt({ path, sha: old, receipt }, env)).rejects.toThrow();
   await expect(
-    checkReceipt({ path, sha: blob, receipt }, { ...env, GITHUB_REPO: "another" }),
+    checkReceipt({ path, sha: blob, receipt }, { ...env, MR_MEMORIE_GITHUB_REPO: "another" }),
   ).rejects.toThrow();
 });
 test("snapshot decodes Unicode content without exposing authentication", async () => {
@@ -127,5 +130,5 @@ test("snapshot decodes Unicode content without exposing authentication", async (
   mockRepo(c);
   const s = await snapshot(env);
   expect(s.content.brand.name).toBe(c.brand.name);
-  expect(JSON.stringify(s)).not.toContain(env.GITHUB_TOKEN);
+  expect(JSON.stringify(s)).not.toContain(env.MR_MEMORIE_GITHUB_TOKEN);
 });

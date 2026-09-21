@@ -182,7 +182,7 @@ function Footer() {
         </div>
         <div>
           <p className="footer-label">{labels.footerContact}</p>
-          <a href={"https://wa.me/" + brand.whatsapp} target="_blank" rel="noopener noreferrer">
+          <a href={"https://wa.me/" + brand.whatsapp.replace(/\D/g, "")} target="_blank" rel="noopener noreferrer">
             {brand.phone}
           </a>
           <p>{brand.location}</p>

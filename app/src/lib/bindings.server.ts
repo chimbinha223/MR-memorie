@@ -18,10 +18,10 @@ type AppEnv = {
   ADMIN_EMAIL?: string;
   ADMIN_PASSWORD_HASH?: string;
   AUTH_SECRET?: string;
-  GITHUB_TOKEN?: string;
-  GITHUB_OWNER?: string;
-  GITHUB_REPO?: string;
-  GITHUB_BRANCH?: string;
+  MR_MEMORIE_GITHUB_TOKEN?: string;
+  MR_MEMORIE_GITHUB_OWNER?: string;
+  MR_MEMORIE_GITHUB_REPO?: string;
+  MR_MEMORIE_GITHUB_BRANCH?: string;
   DB?: D1Database;
   STORAGE?: R2Bucket;
   KV?: KVNamespace;

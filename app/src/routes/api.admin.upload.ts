@@ -10,7 +10,7 @@ export const Route = createFileRoute("/api/admin/upload")({
         api(async () => {
           sameOrigin(request);
           const env = await requireAdmin(request);
-          if (!env.GITHUB_TOKEN)
+          if (!env.MR_MEMORIE_GITHUB_TOKEN)
             throw new ApiError(503, "Configure a ligação ao GitHub antes de enviar fotografias.");
           if (!request.headers.get("content-type")?.startsWith("multipart/form-data;"))
             throw new ApiError(415, "Formato de envio inválido.");
