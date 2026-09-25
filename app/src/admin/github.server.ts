@@ -103,40 +103,77 @@ export function publicCacheKey(env: AdminEnv) {
       encodeURIComponent(branch),
   );
 }
-export async function publicSnapshot(env: AdminEnv): Promise<ContentSnapshot> {
-  const cache = edgeCache(),
-    cacheKey = publicCacheKey(env),
-    staleKey = new Request(cacheKey.url + "/last-good");
-  const cached = await cache?.match(cacheKey);
-  if (cached) return cached.json() as Promise<ContentSnapshot>;
+export function defaultPublicSnapshot(): ContentSnapshot {
+  return {
+    content: contentSchema.parse(defaultContent),
+    revision: "",
+    assetBase: "",
+    initialized: false,
+  };
+}
+async function readPublicCache(
+  cache: Cache | undefined,
+  key: Request,
+): Promise<ContentSnapshot | undefined> {
   try {
-    const result = await snapshot(env);
-    if (cache) {
-      const body = JSON.stringify(result);
-      await cache.put(
-        staleKey,
-        new Response(body, {
-          headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=86400" },
-        }),
-      );
-      await cache.put(
-        cacheKey,
-        new Response(body, {
-          headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=30" },
-        }),
-      );
-    }
-    return result;
+    const response = await cache?.match(key);
+    if (!response) return;
+    const value = (await response.json()) as ContentSnapshot;
+    const parsed = contentSchema.safeParse(value?.content);
+    if (
+      !parsed.success ||
+      typeof value.revision !== "string" ||
+      typeof value.assetBase !== "string"
+    )
+      return;
+    return { ...value, content: parsed.data };
   } catch {
-    const previous = await cache?.match(staleKey);
-    if (previous) return previous.json() as Promise<ContentSnapshot>;
-    return {
-      content: contentSchema.parse(defaultContent),
-      revision: "",
-      assetBase: "",
-      initialized: false,
-    };
+    return;
   }
+}
+export async function publicSnapshot(env: AdminEnv): Promise<ContentSnapshot> {
+  let cache: Cache | undefined, cacheKey: Request, staleKey: Request;
+  try {
+    cacheKey = publicCacheKey(env);
+    staleKey = new Request(cacheKey.url + "/last-good");
+  } catch {
+    return defaultPublicSnapshot();
+  }
+  try {
+    cache = edgeCache();
+  } catch {
+    /* Cache availability must never block a public page. */
+  }
+  const cached = await readPublicCache(cache, cacheKey);
+  if (cached) return cached;
+  let result: ContentSnapshot;
+  try {
+    result = await snapshot(env);
+  } catch {
+    return (await readPublicCache(cache, staleKey)) || defaultPublicSnapshot();
+  }
+  if (cache) {
+    const body = JSON.stringify(result);
+    for (const [key, seconds] of [
+      [cacheKey, 30],
+      [staleKey, 86400],
+    ] as const) {
+      try {
+        await cache.put(
+          key,
+          new Response(body, {
+            headers: {
+              "Content-Type": "application/json",
+              "Cache-Control": "public, max-age=" + seconds,
+            },
+          }),
+        );
+      } catch {
+        /* The fresh GitHub response remains usable when caching is unavailable. */
+      }
+    }
+  }
+  return result;
 }
 function receiptKey(env: AdminEnv) {
   if (!env.AUTH_SECRET || env.AUTH_SECRET.length < 32)

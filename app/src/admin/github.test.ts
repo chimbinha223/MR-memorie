@@ -1,5 +1,12 @@
 import { test, expect, afterEach } from "bun:test";
-import { publish, makeReceipt, checkReceipt, snapshot, base64 } from "./github.server";
+import {
+  publish,
+  makeReceipt,
+  checkReceipt,
+  snapshot,
+  publicSnapshot,
+  base64,
+} from "./github.server";
 import defaults from "../../data/content.json";
 const env = {
   MR_MEMORIE_GITHUB_TOKEN: "test-only-token",
@@ -131,4 +138,54 @@ test("snapshot decodes Unicode content without exposing authentication", async (
   const s = await snapshot(env);
   expect(s.content.brand.name).toBe(c.brand.name);
   expect(JSON.stringify(s)).not.toContain(env.MR_MEMORIE_GITHUB_TOKEN);
+});
+
+test("public pages survive unavailable cache reads and writes", async () => {
+  const previous = globalThis.caches;
+  Object.defineProperty(globalThis, "caches", {
+    configurable: true,
+    value: {
+      default: {
+        match: async () => {
+          throw new Error("Cache unavailable");
+        },
+        put: async () => {
+          throw new Error("Cache unavailable");
+        },
+      },
+    },
+  });
+  try {
+    const c = structuredClone(defaults);
+    c.brand.name = "Live content";
+    mockRepo(c);
+    const result = await publicSnapshot(env);
+    expect(result.content.brand.name).toBe("Live content");
+    expect(result.revision).toBe(old);
+  } finally {
+    Object.defineProperty(globalThis, "caches", { configurable: true, value: previous });
+  }
+});
+test("public pages use bundled content when cache and GitHub are unavailable", async () => {
+  const previous = globalThis.caches;
+  Object.defineProperty(globalThis, "caches", {
+    configurable: true,
+    value: {
+      default: {
+        match: async () => {
+          throw new Error("Cache unavailable");
+        },
+      },
+    },
+  });
+  globalThis.fetch = (async () => {
+    throw new Error("Network unavailable");
+  }) as typeof fetch;
+  try {
+    const result = await publicSnapshot(env);
+    expect(result.content.brand.name).toBe(defaults.brand.name);
+    expect(result.initialized).toBe(false);
+  } finally {
+    Object.defineProperty(globalThis, "caches", { configurable: true, value: previous });
+  }
 });
